@@ -1,5 +1,7 @@
 from invest_helper_funcs import get_currency, key_rate_today, get_moex
 import asyncio, os
+from aiogram.client.session.aiohttp import AiohttpSession
+
 import logging
 from aiogram.types import FSInputFile
 from aiogram import Bot, Dispatcher, F, types
@@ -15,6 +17,7 @@ from datetime import date
 from ai import chat
 
 # --- НАСТРОЙКИ ---
+PROXY = os.getenv("PROXY")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_ID = 6251262108  # Ваш Telegram ID (только вы сможете управлять)
 CHANNEL_ID = -1003848702995  # ID вашего канала (обязательно с -100)
@@ -52,7 +55,9 @@ messages_db = {
 }
 
 # Инициализация бота и диспетчера
-bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+
+session = AiohttpSession(proxy=PROXY)
+bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN), session=session)
 dp = Dispatcher(storage=MemoryStorage())
 scheduler = AsyncIOScheduler(timezone="Europe/Moscow")  # Настройте ваш часовой пояс
 
